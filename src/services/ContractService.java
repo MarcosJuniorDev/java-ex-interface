@@ -17,14 +17,14 @@ public class ContractService
     public void processContract(Contract contract, int months)
     {
         double valuePerMonth = contract.getTotalValue() / months;
-        double parcela = valuePerMonth;
         for(int i = 1; i <= months; i++)
         {
-            parcela += onlinePaymentService.interest(parcela, i);
-            parcela += onlinePaymentService.paymentFee(parcela);
+            double interest = onlinePaymentService.interest(valuePerMonth, i);
+            double fee = onlinePaymentService.paymentFee(valuePerMonth + interest);
             LocalDate dateForContract = contract.getDate().plusMonths(i);
-            contract.addInstallment(parcela, dateForContract);
-            parcela = valuePerMonth;
+            double total = valuePerMonth + interest + fee;
+            contract.addInstallment(total, dateForContract);
+
         }
 
 
